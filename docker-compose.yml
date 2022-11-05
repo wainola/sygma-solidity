@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  evm1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: evm1
+    env_file:
+      - ./.env
+    command: ganache --chain.chainId 1337 -h '0.0.0.0' -d --db data/ --fork.url=${INFURA_ENDPOINT} --blockTime 2
+    ports:
+      - "8545:8545"
+  evm2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: evm2
+    env_file:
+      - ./.env
+    command: ganache --chain.chainId 1338 -h '0.0.0.0' -d --db data/ --fork.url=${INFURA_ENDPOINT} --blockTime 2
+    ports:
+      - "8547:8545"

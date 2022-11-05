@@ -1,6 +1,8 @@
-FROM trufflesuite/ganache-cli
+FROM node:16
+
+RUN npm i -g ganache
 
 WORKDIR /app
 COPY data/ /app/data
 
-CMD ["ganache-cli", "--db", "data/", "-h", "0.0.0.0", "-p", "8545"]
+CMD ["ganache"]

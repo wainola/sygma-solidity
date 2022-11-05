@@ -27,7 +27,9 @@
     "generate-types:ethers": "npx typechain \"build/contracts/*\" --target=ethers-v5 --out-dir src/ethers",
     "test": "echo \\\\\\\"Error: no test specified\\\\\\\" && exit 1",
     "deploy:local:1": "concurrently --raw --kill-others --success first \"ganache-cli --chainId 1337 -d --db data/ --m 'black toward wish jar twin produce remember fluid always confirm bacon slush' \" \"truffle migrate --network test\"",
-    "deploy:local:2": "concurrently --raw --kill-others --success first \"ganache-cli --chainId 1338 -d --db data/ --m 'black toward wish jar twin produce remember fluid always confirm bacon slush' \" \"truffle migrate --network test2\""
+    "deploy:local:2": "concurrently --raw --kill-others --success first \"ganache-cli --chainId 1338 -d --db data/ --m 'black toward wish jar twin produce remember fluid always confirm bacon slush' \" \"truffle migrate --network test2\"",
+    "deploy:local:fork:1": "concurrently --raw --kill-others --success first \"ganache --chain.chainId 1337 --fork.url='wss://mainnet.infura.io/ws/v3/dacc2647f4544d86ba4955bc41a8ad33' --db data/ -m 'black toward wish jar twin produce remember fluid always confirm bacon slush' \" \"truffle migrate --network test\"",
+    "deploy:local:fork:2": "concurrently --raw --kill-others --success first \"ganache --chain.chainId 1338 --fork.url='wss://mainnet.infura.io/ws/v3/dacc2647f4544d86ba4955bc41a8ad33' --db data/ -m 'black toward wish jar twin produce remember fluid always confirm bacon slush' \" \"truffle migrate --network test2\""
   },
   "author": "Sygma",
   "license": "BUSL-1.1",
