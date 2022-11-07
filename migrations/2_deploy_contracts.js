@@ -36,6 +36,7 @@ module.exports = async function(deployer, network) {
     // trim suffix from network name and fetch current network config
     let currentNetworkName = network.split("-")[0]
     let currentNetworkConfig = networksConfig[network.split("-")[0]]
+    console.log("🚀 ~ file: 2_deploy_contracts.js ~ line 39 ~ module.exports=function ~ currentNetworkConfig", currentNetworkConfig)
     // deploy utils contracts
     const accessControlSegregatorInstance = await deployer.deploy(AccessControlSegregatorContract, Helpers.accessControlFuncSignatures, functionAccessAddresses);
     await deployer.deploy(PausableContract);
