@@ -4,20 +4,20 @@ services:
   evm1:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./dockerfiles/node1/Dockerfile
     container_name: evm1
     env_file:
       - ./.env
-    command: ganache --chain.chainId 1337 -h '0.0.0.0' -d --db data/ --fork.url=${INFURA_ENDPOINT} --blockTime 2
+    command: ganache --chain.chainId 1337 -h '0.0.0.0' -d --db data/ --fork.url=wss://mainnet.infura.io/ws/v3/26eb3e866d6e402b8b22369161572c80 --blockTime 2
     ports:
       - "8545:8545"
   evm2:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./dockerfiles/node2/Dockerfile
     container_name: evm2
     env_file:
       - ./.env
-    command: ganache --chain.chainId 1338 -h '0.0.0.0' -d --db data/ --fork.url=${INFURA_ENDPOINT} --blockTime 2
+    command: ganache --chain.chainId 1338 -h '0.0.0.0' -d --db data2/ --fork.url=wss://mainnet.infura.io/ws/v3/26eb3e866d6e402b8b22369161572c80 --blockTime 2
     ports:
       - "8547:8545"
