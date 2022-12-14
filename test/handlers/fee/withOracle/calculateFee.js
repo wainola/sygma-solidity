@@ -21,6 +21,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
     const recipientAddress = accounts[1];
     const gasUsed = 100000;
     const feePercent = 500;
+    const emptySetResourceData = '0x';
+    const msgGasLimit = 0;
 
     let BridgeInstance;
     let FeeHandlerWithOracleInstance;
@@ -64,13 +66,13 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
         await Promise.all([
             FeeHandlerWithOracleInstance.setFeeOracle(oracle.address),
             FeeHandlerWithOracleInstance.setFeeProperties(gasUsed, feePercent),
-            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address),
+            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address, emptySetResourceData),
             BridgeInstance.adminChangeFeeHandler(FeeHandlerRouterInstance.address),
-            FeeHandlerRouterInstance.adminSetResourceHandler(destinationDomainID, resourceID, FeeHandlerWithOracleInstance.address ),
+            FeeHandlerRouterInstance.adminSetResourceHandler(destinationDomainID, resourceID, FeeHandlerWithOracleInstance.address),
         ]);
     });
 
-    it("should calculate amount of fee and return token address", async () => {
+    it("should calculate amount of fee without msgGasLimit and return token address", async () => {
         const tokenAmount = 100;
         const depositData = Helpers.createERCDepositData(tokenAmount, 20, recipientAddress);
 
@@ -81,7 +83,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -89,6 +92,29 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
         assert.equal(Ethers.utils.formatEther(res.fee.toString()), "0.00491802");
         assert.equal(res.tokenAddress, ERC20MintableInstance.address);
     });
+
+    it("should calculate amount of fee with msgGasLimit and return token address", async () => {
+      const tokenAmount = 100;
+      const depositData = Helpers.createERCDepositData(tokenAmount, 20, recipientAddress);
+      const msgGasLimit = 2300000;
+
+
+      const oracleResponse = {
+          ber: Ethers.utils.parseEther("0.000533"),
+          ter: Ethers.utils.parseEther("1.63934"),
+          dstGasPrice: Ethers.utils.parseUnits("30000000000", "wei"),
+          expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
+          fromDomainID: originDomainID,
+          toDomainID: destinationDomainID,
+          resourceID,
+          msgGasLimit
+      };
+
+      const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
+      const res = await FeeHandlerRouterInstance.calculateFee.call(sender, originDomainID, destinationDomainID, resourceID, depositData, feeData);
+      assert.equal(Ethers.utils.formatEther(res.fee.toString()), "0.000036777");
+      assert.equal(res.tokenAddress, ERC20MintableInstance.address);
+  });
 
     it("should return percent fee", async () => {
         const tokenAmount = Ethers.utils.parseEther("1");
@@ -100,7 +126,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -120,7 +147,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -140,7 +168,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount) + "11";
@@ -159,7 +188,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: otherDestinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -177,7 +207,8 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const oracle2 = new Ethers.Wallet.createRandom();
@@ -200,9 +231,10 @@ contract("FeeHandlerWithOracle - [calculateFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) - 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
         await TruffleAssert.reverts(FeeHandlerRouterInstance.calculateFee(sender, originDomainID, destinationDomainID, resourceID, depositData, feeData), "Obsolete oracle data");
     });
- });
+});

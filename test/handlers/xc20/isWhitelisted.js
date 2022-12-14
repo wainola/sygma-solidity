@@ -9,9 +9,9 @@ const Ethers = require('ethers');
 const Helpers = require('../../helpers');
 
 const ERC20MintableContract = artifacts.require("ERC20PresetMinterPauser");
-const ERC20HandlerContract = artifacts.require("ERC20Handler");
+const XC20HandlerContract = artifacts.require("XC20Handler");
 
-contract('ERC20Handler - [isWhitelisted]', async (accounts) => {
+contract('XC20Handler - [isWhitelisted]', async (accounts) => {
     const AbiCoder = new Ethers.utils.AbiCoder();
 
     const domainID = 1;
@@ -39,13 +39,13 @@ contract('ERC20Handler - [isWhitelisted]', async (accounts) => {
     });
 
     it('[sanity] contract should be deployed successfully', async () => {
-        await TruffleAssert.passes(ERC20HandlerContract.new(BridgeInstance.address));
+        await TruffleAssert.passes(XC20HandlerContract.new(BridgeInstance.address));
     });
 
     it('initialContractAddress should be whitelisted', async () => {
-        const ERC20HandlerInstance = await ERC20HandlerContract.new(BridgeInstance.address);
-        await BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID1, ERC20MintableInstance1.address, emptySetResourceData);
-        const isWhitelisted = await ERC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance1.address);
+        const XC20HandlerInstance = await XC20HandlerContract.new(BridgeInstance.address);
+        await BridgeInstance.adminSetResource(XC20HandlerInstance.address, resourceID1, ERC20MintableInstance1.address, emptySetResourceData);
+        const isWhitelisted = await XC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance1.address);
         assert.isTrue(isWhitelisted, "Contract wasn't successfully whitelisted");
     });
 
@@ -53,14 +53,14 @@ contract('ERC20Handler - [isWhitelisted]', async (accounts) => {
     // as we are working with a mandatory whitelist, these tests are currently not necessary
 
     // it('initialContractAddress should not be whitelisted', async () => {
-    //     const ERC20HandlerInstance = await ERC20HandlerContract.new(BridgeInstance.address, initialResourceIDs, initialContractAddresses);
-    //     const isWhitelisted = await ERC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance1.address);
+    //     const XC20HandlerInstance = await XC20HandlerContract.new(BridgeInstance.address, initialResourceIDs, initialContractAddresses);
+    //     const isWhitelisted = await XC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance1.address);
     //     assert.isFalse(isWhitelisted, "Contract should not have been whitelisted");
     // });
 
     // it('ERC20MintableInstance2.address should not be whitelisted', async () => {
-    //     const ERC20HandlerInstance = await ERC20HandlerContract.new(BridgeInstance.address, initialResourceIDs, initialContractAddresses);
-    //     const isWhitelisted = await ERC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance2.address);
+    //     const XC20HandlerInstance = await XC20HandlerContract.new(BridgeInstance.address, initialResourceIDs, initialContractAddresses);
+    //     const isWhitelisted = await XC20HandlerInstance._contractWhitelist.call(ERC20MintableInstance2.address);
     //     assert.isFalse(isWhitelisted, "Contract should not have been whitelisted");
     // });
 });

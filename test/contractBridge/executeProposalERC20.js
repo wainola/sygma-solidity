@@ -12,7 +12,7 @@ const BridgeContract = artifacts.require("Bridge");
 const ERC20MintableContract = artifacts.require("ERC20PresetMinterPauser");
 const ERC20HandlerContract = artifacts.require("ERC20Handler");
 
-contract('Bridge - [execute proposal]', async (accounts) => {
+contract('Bridge - [execute proposal - ERC20]', async (accounts) => {
     const originDomainID = 1;
     const destinationDomainID = 2;
     const invalidDestinationDomainID = 3;
@@ -27,6 +27,7 @@ contract('Bridge - [execute proposal]', async (accounts) => {
     const depositAmount = 10;
     const expectedDepositNonce = 1;
     const feeData = '0x';
+    const emptySetResourceData = '0x';
 
     let BridgeInstance;
     let ERC20MintableInstance;
@@ -57,7 +58,7 @@ contract('Bridge - [execute proposal]', async (accounts) => {
 
         await Promise.all([
             ERC20MintableInstance.mint(depositorAddress, initialTokenAmount),
-            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address)
+            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address, emptySetResourceData)
         ]);
 
         data = Helpers.createERCDepositData(

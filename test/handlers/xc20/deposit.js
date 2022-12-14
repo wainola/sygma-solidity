@@ -8,9 +8,9 @@ const Ethers = require('ethers');
 const Helpers = require('../../helpers');
 
 const ERC20MintableContract = artifacts.require("ERC20PresetMinterPauser");
-const ERC20HandlerContract = artifacts.require("ERC20Handler");
+const XC20HandlerContract = artifacts.require("XC20Handler");
 
-contract('ERC20Handler - [Deposit ERC20]', async (accounts) => {
+contract('XC20Handler - [Deposit ERC20]', async (accounts) => {
     const originDomainID = 1;
     const destinationDomainID = 2;
     const expectedDepositNonce = 1;
@@ -22,9 +22,12 @@ contract('ERC20Handler - [Deposit ERC20]', async (accounts) => {
 
     let BridgeInstance;
     let ERC20MintableInstance;
-    let ERC20HandlerInstance;
+    let XC20HandlerInstance;
 
     let resourceID;
+    let initialResourceIDs;
+    let initialContractAddresses;
+    let burnableContractAddresses;
 
     beforeEach(async () => {
         await Promise.all([
@@ -38,13 +41,13 @@ contract('ERC20Handler - [Deposit ERC20]', async (accounts) => {
         burnableContractAddresses = []
 
         await Promise.all([
-            ERC20HandlerContract.new(BridgeInstance.address).then(instance => ERC20HandlerInstance = instance),
+            XC20HandlerContract.new(BridgeInstance.address).then(instance => XC20HandlerInstance = instance),
             ERC20MintableInstance.mint(depositorAddress, tokenAmount)
         ]);
 
         await Promise.all([
-            ERC20MintableInstance.approve(ERC20HandlerInstance.address, tokenAmount, { from: depositorAddress }),
-            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address, emptySetResourceData)
+            ERC20MintableInstance.approve(XC20HandlerInstance.address, tokenAmount, { from: depositorAddress }),
+            BridgeInstance.adminSetResource(XC20HandlerInstance.address, resourceID, ERC20MintableInstance.address, emptySetResourceData)
         ]);
 
         // set MPC address to unpause the Bridge
@@ -56,8 +59,8 @@ contract('ERC20Handler - [Deposit ERC20]', async (accounts) => {
         assert.equal(tokenAmount, depositorBalance);
     });
 
-    it('[sanity] ERC20HandlerInstance.address has an allowance of tokenAmount from depositorAddress', async () => {
-        const handlerAllowance = await ERC20MintableInstance.allowance(depositorAddress, ERC20HandlerInstance.address);
+    it('[sanity] XC20HandlerInstance.address has an allowance of tokenAmount from depositorAddress', async () => {
+        const handlerAllowance = await ERC20MintableInstance.allowance(depositorAddress, XC20HandlerInstance.address);
         assert.equal(tokenAmount, handlerAllowance);
     });
 
@@ -122,8 +125,8 @@ contract('ERC20Handler - [Deposit ERC20]', async (accounts) => {
         const EOA_Address = accounts[1];
         const resourceID_ZERO_Address = Helpers.createResourceID(ZERO_Address, originDomainID);
         const resourceID_EOA_Address = Helpers.createResourceID(EOA_Address, originDomainID);
-        await BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID_ZERO_Address, ZERO_Address, emptySetResourceData);
-        await BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID_EOA_Address, EOA_Address, emptySetResourceData);
+        await BridgeInstance.adminSetResource(XC20HandlerInstance.address, resourceID_ZERO_Address, ZERO_Address, emptySetResourceData);
+        await BridgeInstance.adminSetResource(XC20HandlerInstance.address, resourceID_EOA_Address, EOA_Address, emptySetResourceData);
 
         const recipientAddress = accounts[0] + accounts[1].substr(2);
         const lenRecipientAddress = 40;

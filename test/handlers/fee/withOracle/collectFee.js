@@ -24,6 +24,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
 
     const gasUsed = 100000;
     const feePercent = 500;
+    const emptySetResourceData = '0x';
+    const msgGasLimit = 0;
 
     let BridgeInstance;
     let FeeHandlerWithOracleInstance;
@@ -44,16 +46,17 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             fromDomainID:   uint8 encoded as uint256
             toDomainID:     uint8 encoded as uint256
             resourceID:     bytes32
+            msgGasLimit:    uint256
             sig:            bytes(65 bytes)
 
         total in bytes:
         message:
-            32 * 7  = 224
+            32 * 8  = 256
         message + sig:
-            224 + 65 = 289
+            256 + 65 = 321
 
             amount: uint256
-        total feeData length: 321
+        total feeData length: 353
     */
 
     beforeEach(async () => {
@@ -73,7 +76,7 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
 
 
         await Promise.all([
-            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address),
+            BridgeInstance.adminSetResource(ERC20HandlerInstance.address, resourceID, ERC20MintableInstance.address, emptySetResourceData),
             ERC20MintableInstance.mint(depositorAddress, tokenAmount + fee),
             ERC20MintableInstance.approve(ERC20HandlerInstance.address, tokenAmount, { from: depositorAddress }),
             ERC20MintableInstance.approve(FeeHandlerWithOracleInstance.address, fee, { from: depositorAddress }),
@@ -96,7 +99,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -137,7 +141,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -165,7 +170,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: originDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -193,7 +199,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -224,7 +231,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);
@@ -256,7 +264,8 @@ contract("FeeHandlerWithOracle - [collectFee]", async accounts => {
             expiresAt: Math.floor(new Date().valueOf() / 1000) + 500,
             fromDomainID: originDomainID,
             toDomainID: destinationDomainID,
-            resourceID
+            resourceID,
+            msgGasLimit
         };
 
         const feeData = Helpers.createOracleFeeData(oracleResponse, oracle.privateKey, tokenAmount);

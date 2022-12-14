@@ -10,7 +10,7 @@
  const BridgeContract = artifacts.require("Bridge");
 
  const blankFunctionSig = '0x00000000';
- const blankFunctionDepositorOffset = 0;
+ const blankFunctionDepositorOffset = "0x0000000000000000000000000000000000000000000000000000000000000000"
  const AbiCoder = new Ethers.utils.AbiCoder;
  const mpcAddress = "0x1Ad4b1efE3Bc6FEE085e995FCF48219430e615C3";
  const mpcPrivateKey= "0x497b6ae580cb1b0238f8b6b543fada697bc6f8768a983281e5e52a1a5bca4d58"
@@ -81,7 +81,7 @@ const advanceTime = (seconds) => {
     return provider.send("evm_mine", [time]);
 }
 
-const createGenericDepositData = (hexMetaData) => {
+const createPermissionedGenericDepositData = (hexMetaData) => {
     if (hexMetaData === null) {
         return '0x' +
             toHex(0, 32).substr(2) // len(metaData) (32 bytes)
@@ -92,23 +92,31 @@ const createGenericDepositData = (hexMetaData) => {
         hexMetaData.substr(2)
 };
 
-const createGenericDepositDataV1 = (executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) => {
-    let metaData = toHex(depositor, 32).substr(2) + executionData.substr(2);
-
+const createPermissionlessGenericDepositData = (executeFunctionSignature, executeContractAddress, maxFee, depositor, executionData, depositorCheck = true) => {
     if(depositorCheck) {
       // if "depositorCheck" is true -> append depositor address for destination chain check
-      metaData = metaData.concat(toHex(depositor, 32).substr(2));
+      executionData = executionData.concat(toHex(depositor,32).substr(2));
     }
 
-    const metaDataLength = metaData.length / 2;
-
-    return '0x' +
-        toHex(metaDataLength, 32).substr(2) +           // len(metaData) (32 bytes)
-        toHex(executeFunctionSignature,32).substr(2) +  // bytes4        (padded to 32 bytes)
-        toHex(executeContractAddress, 32).substr(2) +   // address       (padded to 32 bytes)
-        toHex(maxFee, 32).substr(2) +                   // uint256
-        metaData                                        // bytes
+    return( '0x' +
+        toHex(maxFee, 32).substr(2) +                                        // uint256
+        toHex(executeFunctionSignature.substr(2).length/2, 2).substr(2) +    // uint16
+        executeFunctionSignature.substr(2) +                                 // bytes
+        toHex(executeContractAddress.substr(2).length/2, 1).substr(2) +      // uint8
+        executeContractAddress.substr(2) +                                   // bytes
+        toHex(32, 1).substr(2) +                                             // uint8
+        toHex(depositor, 32).substr(2) +                                     // bytes32
+        executionData.substr(2)                                              // bytes
+    ).toLowerCase()
 };
+
+const constructGenericHandlerSetResourceData = (...args) => {
+  return args.reduce((accumulator, currentArg) => {
+      if(typeof currentArg === 'number'){
+          currentArg = toHex(currentArg, 32);
+      }
+      return accumulator + currentArg.substr(2)});
+}
 
 const createResourceID = (contractAddress, domainID) => {
     return toHex(contractAddress + toHex(domainID, 1).substr(2), 32)
@@ -154,27 +162,28 @@ const nonceAndId = (nonce, id) => {
 const createOracleFeeData = (oracleResponse, privateKey, amount) => {
     /*
         feeData structure:
-            ber*10^18: uint256
-            ter*10^18: uint256
-            dstGasPrice: uint256
-            timestamp: uint256
+            ber*10^18:    uint256
+            ter*10^18:    uint256
+            dstGasPrice:  uint256
+            timestamp:    uint256
             fromDomainID: uint8 encoded as uint256
-            toDomainID: uint8 encoded as uint256
-            resourceID: bytes32
-            sig: bytes(65 bytes)
+            toDomainID:   uint8 encoded as uint256
+            resourceID:   bytes32
+            msgGasLimit:  uint256
+            sig:          bytes(65 bytes)
 
         total in bytes:
         message:
-            32 * 7  = 224
+            32 * 8  = 256
         message + sig:
-            224 + 65 = 289
+            256 + 65 = 321
 
             amount: uint256
-        total feeData length: 321
+        total feeData length: 353
     */
 
     const oracleMessage = Ethers.utils.solidityPack(
-        ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes32'],
+        ['uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint256'],
         [
             oracleResponse.ber,
             oracleResponse.ter,
@@ -182,7 +191,8 @@ const createOracleFeeData = (oracleResponse, privateKey, amount) => {
             oracleResponse.expiresAt,
             oracleResponse.fromDomainID,
             oracleResponse.toDomainID,
-            oracleResponse.resourceID
+            oracleResponse.resourceID,
+            oracleResponse.msgGasLimit
         ]
       );
     const messageHash = Ethers.utils.keccak256(oracleMessage);
@@ -200,8 +210,7 @@ const decimalToPaddedBinary = (decimal) => {
 const accessControlFuncSignatures = [
   "0x80ae1c28", // adminPauseTransfers
   "0xffaac0eb", // adminUnpauseTransfers
-  "0xcb10f215", // adminSetResource
-  "0x5a1ad87c", // adminSetGenericResource
+  "0x8a3234c7", // adminSetResource
   "0x8c0c2631", // adminSetBurnable
   "0xedc20c3c", // adminSetDepositNonce
   "0xd15ef64e", // adminSetForwarder
@@ -217,7 +226,7 @@ const accessControlFuncSignatures = [
 const deployBridge = async (domainID, admin) => {
     let accessControlInstance = await AccessControlSegregatorContract.new(
         accessControlFuncSignatures,
-        Array(14).fill(admin)
+        Array(13).fill(admin)
     )
     return await BridgeContract.new(domainID, accessControlInstance.address);
 }
@@ -289,8 +298,9 @@ module.exports = {
     createERC1155DepositData,
     createERC1155DepositProposalData,
     createERC1155WithdrawData,
-    createGenericDepositData,
-    createGenericDepositDataV1,
+    createPermissionedGenericDepositData,
+    createPermissionlessGenericDepositData,
+    constructGenericHandlerSetResourceData,
     createERC721DepositProposalData,
     createResourceID,
     assertObjectsMatch,

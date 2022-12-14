@@ -9,9 +9,9 @@ const Ethers = require('ethers');
 const Helpers = require('../../helpers');
 
 const ERC20MintableContract = artifacts.require("ERC20PresetMinterPauser");
-const ERC20HandlerContract = artifacts.require("ERC20Handler");
+const XC20HandlerContract = artifacts.require("XC20Handler");
 
-contract('ERC20Handler - [constructor]', async (accounts) => {
+contract('XC20Handler - [constructor]', async (accounts) => {
     const domainID = 1;
     const emptySetResourceData = '0x';
 
@@ -42,7 +42,7 @@ contract('ERC20Handler - [constructor]', async (accounts) => {
     });
 
     it('[sanity] contract should be deployed successfully', async () => {
-        await TruffleAssert.passes(ERC20HandlerContract.new(BridgeInstance.address));
+        await TruffleAssert.passes(XC20HandlerContract.new(BridgeInstance.address));
     });
 
     it('[sanity] bridge configured on domain', async () => {
@@ -54,19 +54,19 @@ contract('ERC20Handler - [constructor]', async (accounts) => {
     });
 
     it('initialResourceIDs should be parsed correctly and corresponding resourceID mappings should have expected values', async () => {
-        const ERC20HandlerInstance = await ERC20HandlerContract.new(BridgeInstance.address);
+        const XC20HandlerInstance = await XC20HandlerContract.new(BridgeInstance.address);
 
         for (i = 0; i < initialResourceIDs.length; i++) {
-            await TruffleAssert.passes(BridgeInstance.adminSetResource(ERC20HandlerInstance.address, initialResourceIDs[i], initialContractAddresses[i], emptySetResourceData));
+            await TruffleAssert.passes(BridgeInstance.adminSetResource(XC20HandlerInstance.address, initialResourceIDs[i], initialContractAddresses[i], emptySetResourceData));
         }
 
         for (const resourceID of initialResourceIDs) {
             const tokenAddress = `0x` + resourceID.substr(24,40);
 
-            const retrievedTokenAddress = await ERC20HandlerInstance._resourceIDToTokenContractAddress.call(resourceID);
+            const retrievedTokenAddress = await XC20HandlerInstance._resourceIDToTokenContractAddress.call(resourceID);
             assert.strictEqual(Ethers.utils.getAddress(tokenAddress).toLowerCase(), retrievedTokenAddress.toLowerCase());
 
-            const retrievedResourceID = await ERC20HandlerInstance._tokenContractAddressToResourceID.call(tokenAddress);
+            const retrievedResourceID = await XC20HandlerInstance._tokenContractAddressToResourceID.call(tokenAddress);
             assert.strictEqual(resourceID.toLowerCase(), retrievedResourceID.toLowerCase());
         }
     });

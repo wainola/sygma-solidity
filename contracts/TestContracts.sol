@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.11;
 
-import "./handlers/HandlerHelpers.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Wrapper.sol";
+import "./handlers/ERCHandlerHelpers.sol";
+import "./interfaces/IERC20Plus.sol";
 
 contract NoArgument {
     event NoArgumentCalled();
@@ -53,12 +55,12 @@ contract ReturnData {
     }
 }
 
-contract HandlerRevert is HandlerHelpers {
+contract HandlerRevert is ERCHandlerHelpers {
     uint private _totalAmount;
 
     constructor(
         address          bridgeAddress
-    ) public HandlerHelpers(bridgeAddress) {
+    ) public ERCHandlerHelpers(bridgeAddress) {
     }
 
     function executeProposal(bytes32, bytes calldata) external view {
@@ -70,6 +72,10 @@ contract HandlerRevert is HandlerHelpers {
 
     function virtualIncreaseBalance(uint amount) external {
         _totalAmount = amount;
+    }
+
+    function setResource(bytes32 resourceID, address contractAddress, bytes calldata args) external {
+        _setResource(resourceID, contractAddress);
     }
 }
 
@@ -127,17 +133,28 @@ contract TestStore {
     @notice {asset} must not have already been stored.
     @notice Emits {AssetStored} event.
    */
-  function storeWithDepositor(bytes32 depositor, bytes32 asset, bytes32 depositorCheck) external {
-      address depositorAddress;
-      address depositorCheckAddress;
-
+  function storeWithDepositor(address depositor, bytes32 asset, address depositorCheck) external {
       require(!_assetsStored[asset], "asset is already stored");
 
-      depositorAddress   = address(uint160(uint256(depositor)));
-      depositorCheckAddress   = address(uint160(uint256(depositorCheck)));
-      require(depositorAddress == depositorCheckAddress, "invalid depositor address");
+      require(depositor == depositorCheck, "invalid depositor address");
 
       _assetsStored[asset] = true;
       emit AssetStored(asset);
   }
+}
+/**
+  @dev This contract mocks XC20 assets based on this example:
+      https://github.com/AstarNetwork/astar-frame/blob/674356e7b611e561aaf9bf581452cab965cf8e87/examples/assets-erc20/XcBurrito.sol#L12
+*/
+contract XC20Test is ERC20 {
+
+    constructor() ERC20("XC20Test", "XC20TST") {}
+
+    function mint(address to, uint256 amount) public {
+        _mint(to, amount);
+    }
+
+    function burn(address from, uint256 amount) public {
+        _burn(from, amount);
+    }
 }

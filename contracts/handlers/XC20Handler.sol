@@ -4,15 +4,15 @@ pragma solidity 0.8.11;
 
 import "../interfaces/IHandler.sol";
 import "./ERCHandlerHelpers.sol";
-import "../ERC20Safe.sol";
+import "../XC20Safe.sol";
 
 /**
-    @title Handles ERC20 deposits and deposit executions.
+    @title Handles XC20 deposits and deposit executions.
     @author ChainSafe Systems.
     @notice This contract is intended to be used with the Bridge contract.
  */
-contract ERC20Handler is IHandler, ERCHandlerHelpers, ERC20Safe {
-    /**
+contract XC20Handler is IHandler, ERCHandlerHelpers, XC20Safe {
+        /**
         @param bridgeAddress Contract address of previously deployed Bridge.
      */
     constructor(
