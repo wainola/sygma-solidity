@@ -1834,20 +1834,7 @@
   "resolved" "https://registry.npmjs.org/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.5.tgz"
   "version" "1.7.5"
 
-"abstract-level@1.0.3":
-  "integrity" "sha512-t6jv+xHy+VYwc4xqZMn2Pa9DjcdzvzZmQGRjTFc8spIbRGHgBrEKbPq+rYXc7CCo0lxgYvSgKVg9qZAhpVQSjA=="
-  "resolved" "https://registry.npmjs.org/abstract-level/-/abstract-level-1.0.3.tgz"
-  "version" "1.0.3"
-  dependencies:
-    "buffer" "^6.0.3"
-    "catering" "^2.1.0"
-    "is-buffer" "^2.0.5"
-    "level-supports" "^4.0.0"
-    "level-transcoder" "^1.0.1"
-    "module-error" "^1.0.1"
-    "queue-microtask" "^1.2.3"
-
-"abstract-leveldown@^7.2.0", "abstract-leveldown@7.2.0":
+"abstract-leveldown@^7.2.0":
   "integrity" "sha512-DnhQwcFEaYsvYDnACLZhMmCWd3rkOeEvglpa4q5i/5Jlm3UIsWaxVzuXvDLFCSCWRO3yy2/+V/G7FusFgejnfQ=="
   "resolved" "https://registry.npmjs.org/abstract-leveldown/-/abstract-leveldown-7.2.0.tgz"
   "version" "7.2.0"
@@ -2091,13 +2078,6 @@
   "version" "1.1.0"
 
 "async-eventemitter@^0.2.2":
-  "integrity" "sha512-pd20BwL7Yt1zwDFy+8MX8F1+WCT8aQeKj0kQnTrH9WaeRETlRamVhD0JtRPmrV4GfOJ2F9CvdQkZeZhnh2TuHw=="
-  "resolved" "https://registry.npmjs.org/async-eventemitter/-/async-eventemitter-0.2.4.tgz"
-  "version" "0.2.4"
-  dependencies:
-    "async" "^2.4.0"
-
-"async-eventemitter@0.2.4":
   "integrity" "sha512-pd20BwL7Yt1zwDFy+8MX8F1+WCT8aQeKj0kQnTrH9WaeRETlRamVhD0JtRPmrV4GfOJ2F9CvdQkZeZhnh2TuHw=="
   "resolved" "https://registry.npmjs.org/async-eventemitter/-/async-eventemitter-0.2.4.tgz"
   "version" "0.2.4"
@@ -4726,18 +4706,15 @@
     "bufferutil" "4.0.5"
     "utf-8-validate" "5.0.7"
 
-"ganache@7.7.3":
-  "integrity" "sha512-dZTUHjzSuvDTMUpKaBTWJnpcWpsBUtqciA8ttdmC/r/XRXJhDa0EpypisYULhoV8tx76G08mOuM/B1vhPbh20A=="
-  "resolved" "https://registry.npmjs.org/ganache/-/ganache-7.7.3.tgz"
-  "version" "7.7.3"
+"ganache@7.5.0":
+  "integrity" "sha512-afNTJYBEaFrLPRrn7eUxH39TgnrffvHn/4T6THzQrc3rpfe4DOxw2nY2XEQxfsq1t4OqKSXtxomzyo26RZiOzw=="
+  "resolved" "https://registry.npmjs.org/ganache/-/ganache-7.5.0.tgz"
+  "version" "7.5.0"
   dependencies:
     "@trufflesuite/bigint-buffer" "1.1.10"
     "@types/bn.js" "^5.1.0"
     "@types/lru-cache" "5.1.1"
     "@types/seedrandom" "3.0.1"
-    "abstract-level" "1.0.3"
-    "abstract-leveldown" "7.2.0"
-    "async-eventemitter" "0.2.4"
     "emittery" "0.10.0"
     "keccak" "3.0.2"
     "leveldown" "6.1.0"
@@ -6136,19 +6113,6 @@
   "resolved" "https://registry.npmjs.org/level-supports/-/level-supports-2.1.0.tgz"
   "version" "2.1.0"
 
-"level-supports@^4.0.0":
-  "integrity" "sha512-PbXpve8rKeNcZ9C1mUicC9auIYFyGpkV9/i6g76tLgANwWhtG2v7I4xNBUlkn3lE2/dZF3Pi0ygYGtLc4RXXdA=="
-  "resolved" "https://registry.npmjs.org/level-supports/-/level-supports-4.0.1.tgz"
-  "version" "4.0.1"
-
-"level-transcoder@^1.0.1":
-  "integrity" "sha512-t7bFwFtsQeD8cl8NIoQ2iwxA0CL/9IFw7/9gAjOonH0PWTTiRfY7Hq+Ejbsxh86tXobDQ6IOiddjNYIfOBs06w=="
-  "resolved" "https://registry.npmjs.org/level-transcoder/-/level-transcoder-1.0.1.tgz"
-  "version" "1.0.1"
-  dependencies:
-    "buffer" "^6.0.3"
-    "module-error" "^1.0.1"
-
 "level-ws@0.0.0":
   "integrity" "sha512-XUTaO/+Db51Uiyp/t7fCMGVFOTdtLS/NIACxE/GHsij15mKzxksZifKVjlXDF41JMUP/oM1Oc4YNGdKnc3dVLw=="
   "resolved" "https://registry.npmjs.org/level-ws/-/level-ws-0.0.0.tgz"
@@ -6671,11 +6635,6 @@
   "integrity" "sha512-qYvlv/exQ4+svI3UOvPUpLDF0OMX5euvUH0Ny4N5QyRyhNdgAgUrVH3iUINSzEPLvx0kbo/Bp28GJKIqvE7URw=="
   "resolved" "https://registry.npmjs.org/mock-fs/-/mock-fs-4.14.0.tgz"
   "version" "4.14.0"
-
-"module-error@^1.0.1":
-  "integrity" "sha512-0yuvsqSCv8LbaOKhnsQ/T5JhyFlCYLPXK3U2sgV10zoKQwzs/MyfuQUOZQ1V/6OCOJsK/TRgNVrPuPDqtdMFtA=="
-  "resolved" "https://registry.npmjs.org/module-error/-/module-error-1.0.2.tgz"
-  "version" "1.0.2"
 
 "ms@^2.1.1", "ms@2.1.2":
   "integrity" "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w=="
@@ -7581,7 +7540,12 @@
     "object-assign" "^4.1.0"
     "strict-uri-encode" "^1.0.0"
 
-"queue-microtask@^1.2.2", "queue-microtask@^1.2.3":
+"queue-microtask@^1.2.2":
+  "integrity" "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
+  "resolved" "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
+  "version" "1.2.3"
+
+"queue-microtask@^1.2.3":
   "integrity" "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
   "resolved" "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   "version" "1.2.3"
@@ -8078,7 +8042,16 @@
   "resolved" "https://registry.npmjs.org/scrypt-js/-/scrypt-js-2.0.4.tgz"
   "version" "2.0.4"
 
-"secp256k1@^4.0.0", "secp256k1@^4.0.1", "secp256k1@4.0.2":
+"secp256k1@^4.0.0", "secp256k1@^4.0.1":
+  "integrity" "sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg=="
+  "resolved" "https://registry.npmjs.org/secp256k1/-/secp256k1-4.0.2.tgz"
+  "version" "4.0.2"
+  dependencies:
+    "elliptic" "^6.5.2"
+    "node-addon-api" "^2.0.0"
+    "node-gyp-build" "^4.2.0"
+
+"secp256k1@4.0.2":
   "integrity" "sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg=="
   "resolved" "https://registry.npmjs.org/secp256k1/-/secp256k1-4.0.2.tgz"
   "version" "4.0.2"
