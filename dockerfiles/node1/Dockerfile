@@ -1,8 +1,8 @@
-FROM node:16
-
-RUN npm i -g ganache@7.5.0
+FROM trufflesuite/ganache
 
 WORKDIR /app
 COPY data/ /app/data
+
+RUN which ganace
 
 CMD ["ganache"]

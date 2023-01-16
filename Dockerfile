@@ -2,5 +2,7 @@ FROM trufflesuite/ganache
 
 WORKDIR /app
 COPY data/ /app/data
+COPY .env /app/
+RUN ls -al
 
-CMD ["ganache", "--db", "data/", "-h", "0.0.0.0", "-p", "8545"]
+CMD ["ganache"]
