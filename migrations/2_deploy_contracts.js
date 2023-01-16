@@ -23,6 +23,10 @@ module.exports = async function(deployer, network) {
     const networksConfig = Utils.getNetworksConfig()
     // fetch deployer address
     const deployerAddress = await deployer['networks'][deployer['network']]['from'];
+    console.log("🚀 ~ file: 2_deploy_contracts.js:26 ~ module.exports=function ~ deployerAddress", deployerAddress)
+    const provider = new Ethers.providers.JsonRpcProvider('http://localhost:8545')
+    const signer = provider.getSigner(deployerAddress)
+    console.log("BALANCE DEPLOYER", (await signer.getBalance()).toString())
     // assign addresses for access segregation
     const functionAccessAddresses = Array(13).fill(deployerAddress);
 
